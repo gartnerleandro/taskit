@@ -8,6 +8,11 @@ Este proyecto es un ejemplo creado con [Expo](https://expo.dev) para enseñar c�
 
 Puedes ver el paso a paso de cómo agregar cada una de estas funcionalidades en mi canal de [YouTube](https://www.youtube.com/@gartnerleandro).
 
+## Así es por dentro
+
+![taskit - home](https://github.com/user-attachments/assets/87905903-80da-45fa-aff2-46c4d02c370b)
+
+
 ## Cómo empezar
 
 > Si quieres empezar desde cero puedes clonar el proyecto desde la rama `template`, si quieres decargar el proyecto completo debes clonar la rama `main`.
