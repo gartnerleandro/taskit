@@ -3,6 +3,7 @@ import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import 'react-native-reanimated';
 
 // Evita que la pantalla inicial se oculte hasta que las fuentes estén cargadas.
@@ -25,12 +26,12 @@ export default function RootLayout() {
   }
 
   return (
-    <>
+    <GestureHandlerRootView>
       <Stack>
         <Stack.Screen name="index" options={{ headerShown: false }} />
         <Stack.Screen name="+not-found" />
       </Stack>
       <StatusBar style="dark" />
-    </>
+    </GestureHandlerRootView>
   );
 }

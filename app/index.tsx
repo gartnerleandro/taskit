@@ -1,23 +1,32 @@
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { FlatList, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import LottieView from "lottie-react-native";
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
 
 import { Todo } from "@/types";
 
 import Header from "@/components/Header";
+import AddTodoModal from "@/components/AddTodoModa";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 
 import todo from "@/assets/lotties/todo.json";
 
 export default function Home() {
   const [todos, setTodos] = useState<Todo[]>([]);
+  const modalRef = useRef<BottomSheetModal>(null);
 
   const addTodo = (todo: Todo) => {
     const updatedTodos = [...todos];
     updatedTodos.push(todo);
 
     setTodos(updatedTodos);
+
+    modalRef.current?.close();
   }
+
+  const handleAddTodo = useCallback(() => {
+    modalRef.current?.present();
+  }, []);
 
   const renderEmptyList = useCallback(() => (
     <View style={styles.emptyContainer}>
@@ -56,11 +65,15 @@ export default function Home() {
       />
 
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.addButton}>
+        <TouchableOpacity style={styles.addButton} onPress={handleAddTodo}>
           <IconSymbol name="plus" color="#fbfbfb" size={18} />
         </TouchableOpacity>
       </View>
       
+      <AddTodoModal
+        modalRef={modalRef}
+        onSave={addTodo}
+      />
     </SafeAreaView>
   )
 }
