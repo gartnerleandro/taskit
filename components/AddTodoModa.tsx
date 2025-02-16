@@ -1,10 +1,20 @@
-import { ForwardedRef, useCallback, useState } from "react";
+import { ForwardedRef, useCallback } from "react";
 import { StyleSheet, View, Text, TextInput, TouchableOpacity } from "react-native";
 import { BottomSheetBackdrop, BottomSheetBackdropProps, BottomSheetModal, BottomSheetModalProvider, BottomSheetView } from "@gorhom/bottom-sheet";
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 
 import uuid from 'react-native-uuid';
 
 import { Todo } from '@/types';
+
+const AddTodoSchema = z.object({
+  title: z.string({ required_error: "Obligatorio" }).min(2, {
+    message: "El título debe terner al menos 2 caracteres"
+  }),
+  description: z.string().optional()
+});
 
 export default function AddTodoModal({
   modalRef,
@@ -13,18 +23,13 @@ export default function AddTodoModal({
   modalRef: ForwardedRef<BottomSheetModal>,
   onSave: (todo: Todo) => void
 }) {
-  const [title, setTitle] = useState<string>("");
-  const [description, setDescription] = useState<string>("");
+  const { control, handleSubmit, reset, formState: { errors } } = useForm<Todo>({
+    resolver: zodResolver(AddTodoSchema),
+  });
 
-  const reset = () => {
-    setTitle("");
-    setDescription("");
-  }
-
-  const onSubmit = () => {
+  const onSubmit = async (data: Todo) => {
     onSave({
-      title,
-      description,
+      ...data,
       id: uuid.v4(),
       completed: false,
     })
@@ -55,23 +60,48 @@ export default function AddTodoModal({
             <Text style={styles.addTodoTitle}>Agrega una tarea</Text>
           </View>
 
-          <TextInput
-            onChangeText={setTitle}
-            placeholder="¿Qué tarea quieres hacer?*"
-            placeholderTextColor="#d3d3d3"
-            value={title}
-            style={styles.inputTodo}
-          />
- 
-          <TextInput
-            onChangeText={setDescription}
-            placeholder="¿En qué consiste la tarea?"
-            placeholderTextColor="#d3d3d3"
-            value={description}
-            style={styles.inputTodo}
+          <Controller
+            control={control}
+            name="title"
+            render={({ field: { onChange, value }}) => (
+              <View style={styles.inputContainer}>
+                <TextInput
+                  onChangeText={onChange}
+                  placeholder="¿Qué tarea quieres hacer?*"
+                  placeholderTextColor="#d3d3d3"
+                  value={value}
+                  style={[
+                    styles.inputTodo,
+                    {
+                      borderColor: errors.title ? "#a61414" : "transparent"
+                    }
+                  ]}
+                />
+                {!!errors.title && (
+                  <Text style={styles.errorMessage}>
+                    {errors.title?.message}
+                  </Text>
+                )}
+              </View>
+            )}
           />
 
-          <TouchableOpacity style={styles.saveTodo} onPress={onSubmit}>
+          <Controller
+            control={control}
+            name="description"
+            render={({ field: { onChange, value }}) => (
+              <TextInput
+                onChangeText={onChange}
+                placeholder="¿En qué consiste la tarea?"
+                placeholderTextColor="#d3d3d3"
+                value={value}
+                style={styles.inputTodo}
+              />
+            )}
+          />
+
+
+          <TouchableOpacity style={styles.saveTodo} onPress={handleSubmit(onSubmit)}>
             <Text>Guardar tarea</Text>
           </TouchableOpacity>
         </BottomSheetView>
@@ -123,5 +153,16 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 8
+  },
+  inputContainer: {
+    position: "relative"
+  },
+  errorMessage: {
+    color: "#9e0606",
+    fontSize: 12,
+    position: "absolute",
+    left: 5,
+    top: -8,
+    backgroundColor: "#ffffff"
   }
 });

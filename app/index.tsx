@@ -10,16 +10,18 @@ import AddTodoModal from "@/components/AddTodoModa";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 
 import todo from "@/assets/lotties/todo.json";
+import useTodoStore from "@/stores/todos";
 
 export default function Home() {
-  const [todos, setTodos] = useState<Todo[]>([]);
+  const todos = useTodoStore((state) => state.todos);
+  const addTodo = useTodoStore((state) => state.addTodo);
   const modalRef = useRef<BottomSheetModal>(null);
 
-  const addTodo = (todo: Todo) => {
-    const updatedTodos = [...todos];
-    updatedTodos.push(todo);
+  const handleSaveTodo = (todo: Todo) => {
 
-    setTodos(updatedTodos);
+    if (todo) {
+      addTodo(todo);
+    }
 
     modalRef.current?.close();
   }
@@ -72,7 +74,7 @@ export default function Home() {
       
       <AddTodoModal
         modalRef={modalRef}
-        onSave={addTodo}
+        onSave={handleSaveTodo}
       />
     </SafeAreaView>
   )
