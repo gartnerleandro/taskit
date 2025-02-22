@@ -1,48 +1,67 @@
+import React from 'react';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
-import { useEffect } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import 'react-native-reanimated';
 
 import AuthProvider, { useAuth } from '@/providers/AuthProvider';
+import SplashScreen from '@/components/SplashScreen';
+import { useState } from 'react';
 
-// Evita que la pantalla inicial se oculte hasta que las fuentes estén cargadas.
-SplashScreen.preventAutoHideAsync();
+function InitialLayout() {
+  const [isAppReady, setIsAppReady] = useState(false);
+  const { loading } = useAuth();
+
+  return (
+    <>
+      <Stack
+        screenOptions={{
+          headerShown: false,
+          animation: "slide_from_right",
+        }}
+      >
+        <Stack.Screen 
+          name="index"
+        />
+        <Stack.Screen
+          name="(auth)/signin/index"
+          options={{ 
+            gestureEnabled: false,
+          }}
+        />
+        <Stack.Screen
+          name="(auth)/signup/index"
+          options={{ 
+            gestureEnabled: false,
+          }}
+        />
+        <Stack.Screen name="+not-found" />
+      </Stack>
+
+      {(loading || !isAppReady) && (
+        <SplashScreen
+          onFinish={(isCancelled) => !isCancelled && setIsAppReady(true)}
+        />
+      )}
+    </>
+  );
+}
 
 export default function RootLayout() {
-  const { loading } = useAuth();
   const [loaded] = useFonts({
     Roboto: require('../assets/fonts/Roboto-Medium.ttf'),
     RobotoBold: require('../assets/fonts/Roboto-Bold.ttf'),
   });
 
-  useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
-    }
-  }, [loaded]);
-
-  if (!loaded && loading) {
+  if (!loaded) {
     return null;
   }
 
   return (
     <AuthProvider>
-      <GestureHandlerRootView>
-        <Stack>
-          <Stack.Screen name="index" options={{ headerShown: false }} />
-          <Stack.Screen
-              name="(auth)/signin/index"
-              options={{ headerShown: false, animation: "none", gestureEnabled: false }}
-            />
-            <Stack.Screen
-              name="(auth)/signup/index"
-              options={{ headerShown: false, animation: "none", gestureEnabled: false }}
-            />
-          <Stack.Screen name="+not-found" />
-        </Stack>
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <InitialLayout />
         <StatusBar style="dark" />
       </GestureHandlerRootView>
     </AuthProvider>
