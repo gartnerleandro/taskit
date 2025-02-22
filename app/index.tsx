@@ -6,7 +6,7 @@ import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { Todo } from "@/types";
 
 import Header from "@/components/Header";
-import AddTodoModal from "@/components/AddTodoModa";
+import AddTodoModal from "@/components/AddTodoModal";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 
 import todo from "@/assets/lotties/todo.json";
