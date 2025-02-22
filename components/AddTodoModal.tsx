@@ -4,16 +4,16 @@ import { BottomSheetBackdrop, BottomSheetBackdropProps, BottomSheetModal, Bottom
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-
-import uuid from 'react-native-uuid';
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { Todo } from '@/types';
+import { createTodo } from "@/api/todos";
 
 const AddTodoSchema = z.object({
   title: z.string({ required_error: "Obligatorio" }).min(2, {
     message: "El título debe terner al menos 2 caracteres"
   }),
-  description: z.string().optional()
+  description: z.string().optional().nullable()
 });
 
 export default function AddTodoModal({
@@ -21,18 +21,31 @@ export default function AddTodoModal({
   onSave,
 } : {
   modalRef: ForwardedRef<BottomSheetModal>,
-  onSave: (todo: Todo) => void
+  onSave: () => void
 }) {
+  const queryClient = useQueryClient();
+  const { mutate: saveTodo, isPending } = useMutation({
+    mutationFn: (todo: Todo) => createTodo(todo),
+    onSuccess: () => {
+      onSave();
+      queryClient.invalidateQueries({
+        queryKey: ["todos"]
+      });
+    },
+    onError: (error) => {
+      console.log(error);
+    }
+  });
   const { control, handleSubmit, reset, formState: { errors } } = useForm<Todo>({
     resolver: zodResolver(AddTodoSchema),
+    defaultValues: {
+      title: "",
+      description: null
+    }
   });
 
   const onSubmit = async (data: Todo) => {
-    onSave({
-      ...data,
-      id: uuid.v4(),
-      completed: false,
-    })
+    saveTodo(data)
   }
 
   const renderBackdrop = useCallback((props: BottomSheetBackdropProps) => (
@@ -76,6 +89,7 @@ export default function AddTodoModal({
                       borderColor: errors.title ? "#a61414" : "transparent"
                     }
                   ]}
+                  editable={!isPending}
                 />
                 {!!errors.title && (
                   <Text style={styles.errorMessage}>
@@ -94,14 +108,19 @@ export default function AddTodoModal({
                 onChangeText={onChange}
                 placeholder="¿En qué consiste la tarea?"
                 placeholderTextColor="#d3d3d3"
-                value={value}
+                value={value || ""}
                 style={styles.inputTodo}
+                editable={!isPending}
               />
             )}
           />
 
 
-          <TouchableOpacity style={styles.saveTodo} onPress={handleSubmit(onSubmit)}>
+          <TouchableOpacity
+            style={styles.saveTodo}
+            onPress={handleSubmit(onSubmit)}
+            disabled={isPending}
+          >
             <Text>Guardar tarea</Text>
           </TouchableOpacity>
         </BottomSheetView>

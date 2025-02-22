@@ -1,7 +1,8 @@
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useRef } from "react";
 import { FlatList, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import LottieView from "lottie-react-native";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
+import { useQuery } from "@tanstack/react-query";
 
 import { Todo } from "@/types";
 
@@ -11,18 +12,16 @@ import { IconSymbol } from "@/components/ui/IconSymbol";
 
 import todo from "@/assets/lotties/todo.json";
 import useTodoStore from "@/stores/todos";
+import getTodos from "@/api/todos";
 
 export default function Home() {
-  const todos = useTodoStore((state) => state.todos);
-  const addTodo = useTodoStore((state) => state.addTodo);
+  const { data: todos } = useQuery({
+    queryKey: ["todos"],
+    queryFn: getTodos
+  });
   const modalRef = useRef<BottomSheetModal>(null);
 
-  const handleSaveTodo = (todo: Todo) => {
-
-    if (todo) {
-      addTodo(todo);
-    }
-
+  const handleSaveTodo = () => {
     modalRef.current?.close();
   }
 

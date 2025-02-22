@@ -2,6 +2,8 @@ import React from 'react';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { useReactQueryDevTools } from "@dev-plugins/react-query";
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import 'react-native-reanimated';
 
@@ -9,9 +11,13 @@ import AuthProvider, { useAuth } from '@/providers/AuthProvider';
 import SplashScreen from '@/components/SplashScreen';
 import { useState } from 'react';
 
+const queryClient = new QueryClient();
+
 function InitialLayout() {
   const [isAppReady, setIsAppReady] = useState(false);
   const { loading } = useAuth();
+  useReactQueryDevTools(queryClient);
+
 
   return (
     <>
@@ -60,10 +66,12 @@ export default function RootLayout() {
 
   return (
     <AuthProvider>
-      <GestureHandlerRootView style={{ flex: 1 }}>
-        <InitialLayout />
-        <StatusBar style="dark" />
-      </GestureHandlerRootView>
+      <QueryClientProvider client={queryClient}>
+        <GestureHandlerRootView style={{ flex: 1 }}>
+          <InitialLayout />
+          <StatusBar style="dark" />
+        </GestureHandlerRootView>
+      </QueryClientProvider>
     </AuthProvider>
   );
 }
