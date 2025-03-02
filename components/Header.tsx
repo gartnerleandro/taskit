@@ -1,7 +1,7 @@
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
-import { IconSymbol } from "@/components/ui/IconSymbol";
 import { supabase } from "@/lib/supabase";
+import { CustomIcon } from "./ui/CustomIcon";
 
 export default function Header() {
   const logout = () => {
@@ -12,10 +12,10 @@ export default function Header() {
     <View style={styles.headerContainer}>
       <Text style={styles.headerTitle}>Taskit</Text>
       <View style={styles.headerIcons}>
-        <IconSymbol name="magnifyingglass" color="#2b2c2d" size={18} />
-        <IconSymbol name="bell" color="#2b2c2d" size={18} />
+        <CustomIcon name="search" color="#2b2c2d" size={18} />
+        <CustomIcon name="bell" color="#2b2c2d" size={18} />
         <TouchableOpacity onPress={logout}>
-          <IconSymbol name="power" color="#2b2c2d" size={18} />
+          <CustomIcon name="logout" color="#2b2c2d" size={18} />
         </TouchableOpacity>
       </View>
     </View>

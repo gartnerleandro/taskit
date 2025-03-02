@@ -9,6 +9,7 @@ import { Todo } from "@/types";
 import Header from "@/components/Header";
 import AddTodoModal from "@/components/AddTodoModal";
 import { IconSymbol } from "@/components/ui/IconSymbol";
+import { CustomIcon } from "@/components/ui/CustomIcon";
 
 import todo from "@/assets/lotties/todo.json";
 import useTodoStore from "@/stores/todos";
@@ -67,7 +68,7 @@ export default function Home() {
 
       <View style={styles.buttonContainer}>
         <TouchableOpacity style={styles.addButton} onPress={handleAddTodo}>
-          <IconSymbol name="plus" color="#fbfbfb" size={18} />
+          <CustomIcon name="plus" color="#fbfbfb" size={18} />
         </TouchableOpacity>
       </View>
       

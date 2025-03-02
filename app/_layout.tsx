@@ -56,6 +56,7 @@ function InitialLayout() {
 
 export default function RootLayout() {
   const [loaded] = useFonts({
+    IcoMoon: require('../assets/fonts/icomoon.ttf'),
     Roboto: require('../assets/fonts/Roboto-Medium.ttf'),
     RobotoBold: require('../assets/fonts/Roboto-Bold.ttf'),
   });
