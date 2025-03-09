@@ -31,6 +31,9 @@ function InitialLayout() {
           name="index"
         />
         <Stack.Screen
+          name="search"
+        />
+        <Stack.Screen
           name="(auth)/signin/index"
           options={{ 
             gestureEnabled: false,

@@ -1,4 +1,5 @@
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { router } from "expo-router";
 
 import { supabase } from "@/lib/supabase";
 import { CustomIcon } from "./ui/CustomIcon";
@@ -12,7 +13,9 @@ export default function Header() {
     <View style={styles.headerContainer}>
       <Text style={styles.headerTitle}>Taskit</Text>
       <View style={styles.headerIcons}>
-        <CustomIcon name="search" color="#2b2c2d" size={18} />
+        <TouchableOpacity onPress={() => router.push("/search")}>
+          <CustomIcon name="search" color="#2b2c2d" size={18} />
+        </TouchableOpacity>
         <CustomIcon name="bell" color="#2b2c2d" size={18} />
         <TouchableOpacity onPress={logout}>
           <CustomIcon name="logout" color="#2b2c2d" size={18} />

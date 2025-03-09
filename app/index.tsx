@@ -4,12 +4,10 @@ import LottieView from "lottie-react-native";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { useQuery } from "@tanstack/react-query";
 
-import { Todo } from "@/types";
-
 import Header from "@/components/Header";
 import AddTodoModal from "@/components/AddTodoModal";
-import { IconSymbol } from "@/components/ui/IconSymbol";
 import { CustomIcon } from "@/components/ui/CustomIcon";
+import TodoItem from "@/components/TodoItem";
 
 import todo from "@/assets/lotties/todo.json";
 import getTodos from "@/api/todos";
@@ -42,16 +40,6 @@ export default function Home() {
     </View>
   ), []);
 
-  const renderItem = useCallback((todo: Todo) => (
-    <TouchableOpacity
-      style={styles.todoItem}
-    >
-      <IconSymbol name={todo.completed ? "checkmark.circle.fill" : "circle"} color="#000" />
-      <Text style={styles.todoItemText}>
-        {todo.title}
-      </Text>
-    </TouchableOpacity>
-  ), []);
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -61,7 +49,7 @@ export default function Home() {
         contentContainerStyle={styles.listContainer}
         data={todos}
         keyExtractor={(item) => item.id}
-        renderItem={({ item }) => renderItem(item)}
+        renderItem={({ item }) => <TodoItem todo={item} />}
         ListEmptyComponent={renderEmptyList}
       />
 
@@ -105,18 +93,6 @@ const styles = StyleSheet.create({
     fontFamily: "Roboto",
     textAlign: "center",
     color: "#d3d3d3"
-  },
-  todoItem: {
-    flexDirection: "row",
-    gap: 10,
-    alignItems: "center",
-    paddingVertical: 10,
-    marginHorizontal: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: "#d3d3d3"
-  },
-  todoItemText: {
-    color: "#2b2c2d"
   },
   listContainer: {
     flex: 1
