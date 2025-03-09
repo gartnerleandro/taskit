@@ -12,7 +12,6 @@ import { IconSymbol } from "@/components/ui/IconSymbol";
 import { CustomIcon } from "@/components/ui/CustomIcon";
 
 import todo from "@/assets/lotties/todo.json";
-import useTodoStore from "@/stores/todos";
 import getTodos from "@/api/todos";
 
 export default function Home() {
