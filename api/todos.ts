@@ -24,3 +24,13 @@ export async function createTodo(todo: Todo) {
 
   return data;
 }
+
+export async function getFilteredTodos(searchText: string): Promise<Todo[]> {
+  const {data, error } = await supabase.from("todos").select().textSearch("title_description", searchText);
+
+  if (error) {
+    throw error;
+  }
+
+  return data;
+}

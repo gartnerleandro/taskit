@@ -31,6 +31,14 @@ Puedes ver el paso a paso de cómo agregar cada una de estas funcionalidades en 
 
 Comienza a desarrollar editando los archivos dentro del directorio **app**. Este proyecto utiliza [rutas basadas en archivos](https://docs.expo.dev/router/introduction).
 
+## Función de supabase para el buscador
+
+``` sql
+create function title_description(todos) returns text as $$
+  select $1.title || ' ' || $1.description;
+$$ language sql immutable;
+```
+
 
 ## Unete a la comunidad
 
